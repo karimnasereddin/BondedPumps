@@ -11,8 +11,9 @@ from termcolor import cprint, colored
 
 RAYDIUM_PROGRAM_ID="675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8"
 PUMP_FUN_PROGRAM_ID="6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
+MIGRATOR_PROGRAM_ID="39azUYFWPz3VHgKCf3VChUwbpURdCHRxjWVowf5jUJjg"
 
-CSV_FILE_PATH="sol_scan.csv"
+CSV_FILE_PATH="solgrads.csv"
 SOLANA_RPC_URL="https://api.mainnet-beta.solana.com"
 TOKEN_PROGRAM_ID = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 
@@ -42,7 +43,7 @@ async def run_websocket():
             "method": "logsSubscribe",
             "params": [
                 {
-                    "mentions": [PUMP_FUN_PROGRAM_ID]
+                    "mentions": [MIGRATOR_PROGRAM_ID]
                 },
                 {
                     "commitment": "finalized"
@@ -71,10 +72,10 @@ async def run_websocket():
                             seen_signatures.add(signature)
                             logs= data["params"]["result"]["value"].get("logs", [])
                             #if any("InitializeMint2" in log for log in logs): #raydium
-                            if any("Program log: Instruction: MintTo" in log for log in logs):
+                            if any("Program log: initialize2: InitializeInstruction2" in log for log in logs):
                                 new_token= await get_new_token(session,signature)
                                 if new_token:
-                                    cprint(f"New token launched: {new_token}", 'white', 'on_blue', attrs=['bold'])
+                                    cprint(f"New token graduation: {new_token}", 'white', 'on_blue', attrs=['bold'])
                                     cprint(f"https://solscan.io/token/{new_token}", 'white', 'on_green', attrs=['bold'])
                                     save_to_csv(new_token, signature)
 
@@ -107,10 +108,26 @@ async def get_new_token(session,signature):
         instructions = data.get("result",{}).get("transaction",{}).get("message",{}).get("instructions",[])
         for instruction in instructions:           
             program_id = instruction.get("programId")
-            if program_id == PUMP_FUN_PROGRAM_ID:
+            print(instruction)
+            if program_id == RAYDIUM_PROGRAM_ID:
                 accs= instruction.get("accounts",[])
-                if len(accs)==12:
-                    return accs[2]
+                if len(accs)==21:
+                    request_body={ 
+                        "jsonrpc": "2.0",
+                        "id": 1,
+                        "method": "getAccountInfo",
+                        "params":[
+                            accs[9],
+                            {
+                            "encoding": "jsonParsed",
+                            },
+
+                        ]
+                    }
+                    with session.post(SOLANA_RPC_URL, json=request_body) as response:
+                        data= await response.json()
+                        print(data)
+                    return accs[9]
 
     return None
 
