@@ -1,17 +1,15 @@
-# PumpFun New Token Launch Scanner
-
-<img src="logo.png" alt="Logo" width="200">  (If you have a logo, include it here)
+# PumpFun Token Migration Tracker
 
 **Python 3.8.20**
 
-This script scans for new token launches on the PumpFun platform in real-time.
+This script monitors PumpFun tokens after they complete their bonding curve phase and detects when they migrate to Raydium.
 
 ## Features
 
-*   Listens to Solana blockchain events.
-*   Identifies new PumpFun token launches as they occur.
-*   Provides alerts for each new token, including relevant links (SolScan, DexScreener, Birdeye).
-*   Saves the detected token launches to a CSV file (`sol_scan.csv`) for future reference.
+*   Listens to Solana blockchain events in real-time.
+*   Tracks these tokens for migration to the Raydium DEX.
+*   Provides alerts when a token migrates, including relevant links (SolScan, DexScreener, Birdeye).
+*   Saves the detected token migrations to a CSV file (`solgrads.csv`) for future reference.
 
 ## Setup
 
@@ -24,7 +22,7 @@ This script scans for new token launches on the PumpFun platform in real-time.
 2.  **Run the script:**
 
     ```bash
-    python sol_scan.py
+    python graduate.py
     ```
 
 ## Usage
@@ -33,15 +31,7 @@ This script scans for new token launches on the PumpFun platform in real-time.
 2.  Clone this repository.
 3.  Run the script (`python sol_scan.py`).
 
-The script will connect to the Solana blockchain and start monitoring for new PumpFun token launches.
+The script will connect to the Solana blockchain and start monitoring for new PumpFun tokens and their subsequent migration to Raydium.
 
+**Note:** For more accurate, smooth results and improved performance, using a paid RPC service like QuickNode is recommended instead of the Solana mainnet public RPC.
 
-## Screenshot
-
-![Screenshot](scanexample.png)  (Replace with your actual screenshot filename)
-
-
-## Disclaimer
-
-*   Use this script responsibly and respect the Solana terms of service.
-*   Be cautious when participating in any "pump" activities, as they carry significant financial risks.
