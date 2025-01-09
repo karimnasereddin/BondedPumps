@@ -108,7 +108,6 @@ async def get_new_token(session,signature):
         instructions = data.get("result",{}).get("transaction",{}).get("message",{}).get("instructions",[])
         for instruction in instructions:           
             program_id = instruction.get("programId")
-            print(instruction)
             if program_id == RAYDIUM_PROGRAM_ID:
                 accs= instruction.get("accounts",[])
                 if len(accs)==21:
